@@ -51,9 +51,11 @@ export class UsersService {
 
       if (userExists) {
         if (isSamePassword) {
+          user = { ...user, password: userExists.password };
+
           const updatedUser = await this.userRepository.updateUser(
             userId,
-            userExists,
+            user,
           );
           if (updatedUser) return 'This user was updated successfully';
         } else {
@@ -62,6 +64,12 @@ export class UsersService {
           );
 
           user = { ...user, password: hashedPassword };
+          const updatedUser = await this.userRepository.updateUser(
+            userId,
+            user,
+          );
+
+          if (updatedUser) return 'This user was updated successfully';
         }
       }
     } catch (e) {
