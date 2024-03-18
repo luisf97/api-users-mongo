@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from 'src/Schema/Users/user.schema';
 import { UsersController } from 'src/controllers/users/users.controller';
@@ -12,7 +13,7 @@ import { UsersService } from 'src/services/users/users.service';
     MongooseModule.forRoot('mongodb://localhost/usersdb'),
   ],
   controllers: [UsersController],
-  providers: [UsersService, UserRepository, HashService],
+  providers: [UsersService, UserRepository, HashService, JwtService],
   exports: [UserRepository],
 })
 export class UserModule {}
