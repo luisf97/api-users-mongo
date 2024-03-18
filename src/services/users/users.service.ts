@@ -44,36 +44,33 @@ export class UsersService {
   async updateUser(userId: string, user: UserDTO) {
     try {
       const userExists = await this.userRepository.findById(userId);
+
+      if (!userExists)
+        throw new BadRequestException('This user does not exist');
+
       const isSamePassword = await this.hashService.comparePasswords(
         user.password,
         userExists.password,
       );
 
-      if (userExists) {
-        if (isSamePassword) {
-          user = { ...user, password: userExists.password };
+      if (isSamePassword) user = { ...user, password: userExists.password };
+      else {
+        const hashedPassword = await this.hashService.hashPassword(
+          user.password,
+        );
 
-          const updatedUser = await this.userRepository.updateUser(
-            userId,
-            user,
-          );
-          if (updatedUser) return 'This user was updated successfully';
-        } else {
-          const hashedPassword = await this.hashService.hashPassword(
-            user.password,
-          );
+        user = { ...user, password: hashedPassword };
+      }
 
-          user = { ...user, password: hashedPassword };
-          const updatedUser = await this.userRepository.updateUser(
-            userId,
-            user,
-          );
+      const updatedUser = await this.userRepository.updateUser(userId, user);
 
-          if (updatedUser) return 'This user was updated successfully';
-        }
+      if (updatedUser) {
+        return 'This user was updated successfully';
+      } else {
+        throw new Error('Failed to update user');
       }
     } catch (e) {
-      throw new BadRequestException('This user does not exist');
+      throw new BadRequestException(e.message);
     }
   }
 
