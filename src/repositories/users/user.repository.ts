@@ -26,6 +26,10 @@ export class UserRepository {
     );
   }
 
+  async getUserByUsername(username: string): Promise<User | null> {
+    return await this.userModel.findOne({ username }).exec();
+  }
+
   async saveUser(newUser: UserDTO): Promise<User> {
     const createdUser = new this.userModel(newUser);
     return createdUser.save();
