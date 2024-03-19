@@ -18,7 +18,7 @@ export class AuthService {
     }
 
     const payload = { username: user.username, sub: user._id };
-    return this.jwtService.sign(payload, { secret: 'secret-key-luis' });
+    return this.jwtService.signAsync(payload);
   }
 
   private async validateUser(username: string, password: string): Promise<any> {

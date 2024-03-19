@@ -18,7 +18,6 @@ export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   getAllUsers(): Promise<User[]> {
     return this.userService.getAllUsers();
   }
@@ -38,12 +37,12 @@ export class UsersController {
     return await this.userService.saveUser(newUser);
   }
 
-  @Patch(':userId')
+  @Patch('id/:userId')
   async updateUser(@Param('userId') userId: string, @Body() user: UserDTO) {
     return await this.userService.updateUser(userId, user);
   }
 
-  @Delete(':userId')
+  @Delete('id/:userId')
   async deleteUser(@Param('userId') userId: string) {
     return await this.userService.deleteUser(userId);
   }
